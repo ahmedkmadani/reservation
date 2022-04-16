@@ -1,3 +1,5 @@
+from argparse import Namespace
+from unicodedata import name
 from django.urls import path, include
 from app.views.user import RegisterView
 from app.views.tables import TableViewSet
@@ -9,8 +11,8 @@ from rest_framework_simplejwt.views import (
 )
 
 router = routers.DefaultRouter()
-router.register(r"register", RegisterView)
-router.register(r"table", TableViewSet)
+router.register(r"register", RegisterView, basename='register')
+router.register(r"table", TableViewSet, basename='table')
 router.register(r"reservation", ReservationView)
 
 
