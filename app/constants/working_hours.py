@@ -1,5 +1,6 @@
+from datetime import datetime
 
 #TODO: MOVE TO DB
 class WorkingHours:
-    start_time = "12:00"
-    end_time = "11:59"
+    start_time = datetime.strptime("12:00PM", "%I:%M%p")
+    end_time = datetime.strptime("11:59PM", "%I:%M%p")
