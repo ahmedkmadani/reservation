@@ -62,8 +62,7 @@ class Migration(migrations.Migration):
                 (
                     "employee_number",
                     models.IntegerField(
-                        error_messages={
-                            "required": "Please enter employee number"},
+                        error_messages={"required": "Please enter employee number"},
                         unique=True,
                         validators=[app.models.user.validate_length],
                     ),

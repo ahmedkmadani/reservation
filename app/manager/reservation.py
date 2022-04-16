@@ -15,8 +15,12 @@ class IsOpenManager:
         return (
             True
             if (
-                datetime.strptime(self.start_time, TimeFormat.time_format) >= WorkingHours.start_time
+                datetime.strptime(self.start_time, TimeFormat.time_format)
+                >= WorkingHours.start_time
             )
-            and (datetime.strptime(self.end_time, TimeFormat.time_format) < WorkingHours.end_time)
+            and (
+                datetime.strptime(self.end_time, TimeFormat.time_format)
+                < WorkingHours.end_time
+            )
             else False
         )
