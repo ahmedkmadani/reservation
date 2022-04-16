@@ -9,9 +9,16 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # Turns off buffering for easier container logging
 ENV PYTHONUNBUFFERED=1
 
+# Install nginx and nano
+RUN apt-get update -y  \
+    && apt install nginx nano -y
+
 # Install pip requirements
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
+
+# Copy nginx config file
+COPY nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /app
 COPY . /app

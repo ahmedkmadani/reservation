@@ -1,12 +1,15 @@
 version: '3.4'
 
 services:
-  reservation:
-    image: reservation
+  api:
+    image: api
+    container_name: api
     build:
       context: .
       dockerfile: ./Dockerfile
     command: gunicorn --bind 0.0.0.0:8000 reservation.wsgi
+    volumes:
+      - static_data:/app/static/
     ports:
       - 8000:8000
     depends_on:
@@ -35,3 +38,4 @@ services:
 
 volumes:
   postgres_data:
+  static_data:
