@@ -10,8 +10,7 @@ from django.urls import reverse
 
 class UserTest(APITestCase):
     def test_create_admin(self):
-        self.testuser1 = User.objects.create(
-            password="test", employee_number="1234")
+        self.testuser1 = User.objects.create(password="test", employee_number="1234")
 
         # url = reverse('blog_api:listcreate')
         response = self.client.login(

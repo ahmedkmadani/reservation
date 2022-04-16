@@ -22,6 +22,7 @@ class User(AbstractUser):
     email = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     username = None
     first_name = None
     last_name = None

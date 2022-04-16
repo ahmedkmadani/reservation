@@ -17,6 +17,7 @@ class TableViewSet(viewsets.ModelViewSet, IsAdminPermission):
     queryset = Tables.objects.all()
     serializer_class = TableSerializer
     pagination_class = LimitOffsetPagination
+    filterset_fields = ["table_number", "seats_number"]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

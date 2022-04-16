@@ -18,6 +18,7 @@ class Command(BaseCommand):
                 "name": "admin",
                 "email": "admin@mail.com",
                 "is_admin": True,
+                "is_superuser": True,
             }
             instance = User(**data)
             instance.set_password("password")
