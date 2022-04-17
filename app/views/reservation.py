@@ -1,5 +1,6 @@
-from datetime import date
+from datetime import date, datetime
 from http import HTTPStatus
+from venv import create
 
 from rest_framework import viewsets
 from rest_framework.views import APIView
@@ -15,27 +16,31 @@ from app.manager.reservation import IsOpenManager
 from app.constants.response import ResposneMsg
 
 
-class AvailableSlotView(APIView):
+class AvailableSlotView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated & AllowAny]
+    serializer_class = TableSerializer
+    queryset = Tables.objects.all()
 
-    def get(self, request):
-        seats_number = request.data["seats_number"]
-        start_time = request.data["start_time"]
-        end_time = request.data["end_time"]
+    def get(self, serializer, *args, **kwargs):
 
-        if not IsOpenManager(start_time=start_time, end_time=end_time).is_open():
+        if not IsOpenManager(
+            start_time=self.request.data["start_time"],
+            end_time=self.request.data["end_time"],
+        ).is_open():
             return Response(
                 {"msg": ResposneMsg.RESTURANT_IS_CLOSED}, status=HTTPStatus.OK
             )
-
-        table = Tables.objects.filter(seats_number=seats_number + 1).all()
+        table = self.queryset.filter(seats_number=self.request.data["seats_number"] + 1)
         if not table:
             return Response(
                 {"msg": ResposneMsg.NO_AVILABLE_TABLE}, status=HTTPStatus.OK
             )
         else:
-            serializer = TableSerializer(data=table, many=True)
-            serializer.is_valid()
+            reserved_tables = Reservations.get_resrved_tables(
+                table, self.request.data["start_time"], self.request.data["end_time"]
+            )
+            free_tables = self.queryset.exclude(table_number__in=reserved_tables).all()
+            serializer = self.serializer_class(data=free_tables, many=True)
             return Response(serializer.data, status=HTTPStatus.OK)
 
 
@@ -55,7 +60,7 @@ class ReservationView(viewsets.ModelViewSet):
                 {"msg": ResposneMsg.RESERVATION_IS_NOT_EXIST}, status=HTTPStatus.OK
             )
         else:
-            serializer = ReservationsSerializer(data=self.request.data)
+            serializer = self.serializer_class(data=self.request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
@@ -76,3 +81,19 @@ class ReservationView(viewsets.ModelViewSet):
             return Response(
                 {"msg": ResposneMsg.RESERVATION_IS_NOT_EXIST}, status=HTTPStatus.OK
             )
+
+
+class ReservationTodayView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated & AllowAny]
+    queryset = Reservations.objects.all()
+    serializer_class = ReservationsSerializer
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        queryset = self.queryset
+        query_set = queryset.filter(
+            created_at__year=date.today().year,
+            created_at__month=date.today().month,
+            created_at__day=date.today().day,
+        )
+        return query_set

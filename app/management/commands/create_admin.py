@@ -6,6 +6,9 @@ User = get_user_model()
 
 
 class Command(BaseCommand):
+    """
+    Command to seed db with admin user
+    """
     def handle(self, *args, **options):
         self.stdout.write(self.style.NOTICE("STARTED"))
 
