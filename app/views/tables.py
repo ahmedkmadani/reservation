@@ -31,7 +31,6 @@ class TableViewSet(viewsets.ModelViewSet, IsAdminPermission):
     def destroy(self, serializer, *args, **kwargs):
         try:
             instance = self.get_object()
-            print(instance.pk)
             if Reservations.table_in_reservations(instance.pk):
                 return Response(
                     {"msg": ResposneMsg.CANNOT_DELETE_TABLE}, status=HTTPStatus.OK

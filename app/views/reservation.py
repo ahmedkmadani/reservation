@@ -1,9 +1,7 @@
-from datetime import date, datetime
+from datetime import date
 from http import HTTPStatus
-from venv import create
 
 from rest_framework import viewsets
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
@@ -21,7 +19,7 @@ class AvailableSlotView(viewsets.ModelViewSet):
     serializer_class = TableSerializer
     queryset = Tables.objects.all()
 
-    def get(self, serializer, *args, **kwargs):
+    def list(self, serializer, *args, **kwargs):
 
         if not IsOpenManager(
             start_time=self.request.data["start_time"],
@@ -41,6 +39,7 @@ class AvailableSlotView(viewsets.ModelViewSet):
             )
             free_tables = self.queryset.exclude(table_number__in=reserved_tables).all()
             serializer = self.serializer_class(data=free_tables, many=True)
+            serializer.is_valid()
             return Response(serializer.data, status=HTTPStatus.OK)
 
 
@@ -51,13 +50,21 @@ class ReservationView(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
     filterset_fields = ["table_number", "uuid", "customer_phone_number"]
 
-    def perform_create(self, serializer):
+    def create(self, serializer, *args, **kwargs):
         if not IsOpenManager(
             start_time=self.request.data["start_time"],
             end_time=self.request.data["end_time"],
         ).is_open():
             return Response(
-                {"msg": ResposneMsg.RESERVATION_IS_NOT_EXIST}, status=HTTPStatus.OK
+                {"msg": ResposneMsg.RESTURANT_IS_CLOSED}, status=HTTPStatus.OK
+            )
+        elif Reservations.check_duplicate_reservations(
+            start_time=self.request.data["start_time"],
+            end_time=self.request.data["end_time"],
+            table_number=self.request.data["table_number"],
+        ):
+            return Response(
+                {"msg": ResposneMsg.DUPLICATED_RESERVATION}, status=HTTPStatus.OK
             )
         else:
             serializer = self.serializer_class(data=self.request.data)
