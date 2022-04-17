@@ -7,9 +7,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    command: gunicorn --bind 0.0.0.0:8000 reservation.wsgi
-    volumes:
-      - static_data:/app/static/
+    command: gunicorn --bind 0.0.0.0:8000 reservation.wsgi -c reservation/gunicorn/default.conf.py
     ports:
       - 8000:8000
     depends_on:
@@ -27,7 +25,6 @@ services:
       POSTGRES_USER: db_user
       POSTGRES_PASSWORD: reservation_admin
       POSTGRES_DB: db_reservation
-      POSTGRES_HOST_AUTH_METHOD: trust
 
   redis:
     image: redis
@@ -38,4 +35,3 @@ services:
 
 volumes:
   postgres_data:
-  static_data:

@@ -21,4 +21,5 @@ redis==4.2.2
 requests==2.27.1
 sqlparse==0.4.2
 urllib3==1.26.9
+whitenoise==6.0.0
 wrapt==1.14.0
