@@ -18,7 +18,6 @@ class Reservations(models.Model):
     class Meta:
         ordering = ["created_at"]
 
-
     @classmethod
     def get_resrved_tables(cls, table, start_time, end_time):
         """
@@ -36,7 +35,6 @@ class Reservations(models.Model):
         )
         return reserved_tables
 
-
     @classmethod
     def check_duplicate_reservations(cls, start_time, end_time, table_number):
         """
@@ -51,7 +49,6 @@ class Reservations(models.Model):
             & Q(table_number=table_number)
         ).exists()
         return is_exists
-
 
     @classmethod
     def table_in_reservations(cls, pk):

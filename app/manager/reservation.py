@@ -24,3 +24,19 @@ class IsOpenManager:
             )
             else False
         )
+
+
+class ConvertTime:
+    """
+    convet time from hh:mm AM/PM to same as foramt in DB hh:mm:ss
+    """
+
+    def __init__(self, start_time, end_time):
+        self.start_time = start_time
+        self.end_time = end_time
+
+    def convertTo24(self):
+        start_time_ = datetime.strptime(self.start_time, "%I:%M%p").time()
+        end_time_ = datetime.strptime(self.end_time, "%I:%M%p").time()
+
+        return start_time_, end_time_
