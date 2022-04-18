@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
-from app.serializers.tables import TableSerializer
+from app.serializers.tables import TableSerializer, FreeTableSerializer
 from app.serializers.reservation import ReservationsSerializer
 from app.models.tables import Tables
 from app.models.reservations import Reservations
@@ -38,7 +38,7 @@ class AvailableSlotView(viewsets.ModelViewSet):
                 table, self.request.data["start_time"], self.request.data["end_time"]
             )
             free_tables = self.queryset.exclude(table_number__in=reserved_tables).all()
-            serializer = self.serializer_class(data=free_tables, many=True)
+            serializer = FreeTableSerializer(data=free_tables, many=True)
             serializer.is_valid()
             return Response(serializer.data, status=HTTPStatus.OK)
 

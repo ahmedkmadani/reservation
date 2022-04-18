@@ -8,10 +8,10 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-#TODDO: REFACTOR USER CREATE TO OVERCOME DRY
+# TODDO: REFACTOR USER CREATE TO OVERCOME DRY
+
 
 class TablesTest(APITestCase):
-
     def test_admin_create_table(self):
 
         """
@@ -31,12 +31,9 @@ class TablesTest(APITestCase):
 
         self.client.force_authenticate(instance)
 
-        table_data = {
-            "table_number": 1,
-            "seats_number": 2
-        }
+        table_data = {"table_number": 1, "seats_number": 2}
 
-        url = reverse('table-list')
+        url = reverse("table-list")
         response = self.client.post(url, data=table_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -58,10 +55,9 @@ class TablesTest(APITestCase):
 
         self.client.force_authenticate(instance)
 
-        url = reverse('table-list')
-        response = self.client.get(url, format='json')
+        url = reverse("table-list")
+        response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
     def test_user_view_tables(self):
 
@@ -81,8 +77,8 @@ class TablesTest(APITestCase):
 
         self.client.force_authenticate(instance)
 
-        url = reverse('table-list')
-        response = self.client.get(url, format='json')
+        url = reverse("table-list")
+        response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_create_table(self):
@@ -103,12 +99,9 @@ class TablesTest(APITestCase):
 
         self.client.force_authenticate(instance)
 
-        table_data = {
-            "table_number": 1,
-            "seats_number": 2
-        }
+        table_data = {"table_number": 1, "seats_number": 2}
 
-        url = reverse('table-list')
+        url = reverse("table-list")
         response = self.client.post(url, data=table_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -135,12 +128,12 @@ class RegisterTest(APITestCase):
         self.client.force_authenticate(instance)
 
         user_data = {
-                "name": "user",
-                "email": "user@mail.com",
-                "password": "test",
-                "employee_number": 1233
-            }
+            "name": "user",
+            "email": "user@mail.com",
+            "password": "test",
+            "employee_number": 1233,
+        }
 
-        url = reverse('register-list')
+        url = reverse("register-list")
         response = self.client.post(url, data=user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
